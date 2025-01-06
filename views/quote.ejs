@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/style.css">
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    rel="stylesheet"
+  />
+  <title>Bhagavad Gita Chapters</title>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="topnav">
+    <a href="/home" class="logo">Bhagavad Gita</a>
+    <div class="nav-links">
+      <a href="/home">Chapters</a>
+      <a href="/quote">Quote</a>
+    </div>
+    <div class="profile">
+      <a class="user" style="color: black; text-decoration: none" href="/users"
+        >Hello, <b><%= user.first_name %></b></a
+      >
+
+      <a href="/users">
+        <img
+          class="icon"
+          src="/uploads/<%= user.profilePicture %>"
+          onerror="this.onerror=null; this.src='/uploads/default.jpg';"
+          alt="Profile"
+        /></a>
+    </div>
+  </div>
+
+<div class="Bodymain">
+
+
+  <!-- Main Content -->
+  <div class="content">
+    <h1>QUOTE OF THE DAY</h1>
+    <p>"<%=SlokLine%>"</p>
+    <form action="/<%=button%>" method="POST">
+      <button class="btnss" type="submit"><%= button %></button>
+      <%if(locals.start){%>
+      <p  style="color:red; font-size: smaller;"><%=start%></p>
+      <%}else if(locals.stop){%>
+        <p style="color: green; font-size: smaller"><%=stop%></p>  
+      <%}%>
+    </form>
+  </div>
+</div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-name">
+        <p style="padding-top: 5px">Vraj Patel</p>
+      </div>
+
+      <div class="footer-links">
+        <a
+          href="www.linkedin.com/in/vraj-patel-803248235"
+          class="icon-link"
+          target="_blank"
+        >
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a
+          href="https://github.com/Vraj-1999?tab=repositories"
+          class="icon-link"
+          target="_blank"
+        >
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="mailto:vrajpatel479@@example.com" class="icon-link">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 Bhagwat Geeta. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
