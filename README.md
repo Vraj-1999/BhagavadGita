@@ -47,7 +47,7 @@ The relationships can be visualized as follows:<br>
 User has a many-to-many relationship with Sloka via Comment.<br>
 Sloka has a many-to-many relationship with User via Comment.<br>
 <br>
-![image](https://github.com/user-attachments/assets/fa9f9da3-9355-41a2-94c8-6de3c6aa8ceb)<br>
+![Table](https://github.com/user-attachments/assets/6a3c76b0-ed98-4fe5-857d-1a238b223d38)<br>
 <br>
 <br>
 Explanation:<br>
