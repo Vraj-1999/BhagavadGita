@@ -37,7 +37,7 @@ const logSchema = new mongoose.Schema({
 
 logSchema.pre("save", async function(next){
   const salt = await bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password,salt)
+  this.password = await bcrypt.hash(this.password,salt);
   next();
 })
 

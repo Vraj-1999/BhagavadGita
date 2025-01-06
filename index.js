@@ -63,7 +63,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage: storage, fileFilter: fileFilter});
 
 mongoose
-  .connect("mongodb://localhost:27017/Comment")
+  .connect("mongodb+srv://vrajpatel479:<db_password>@cluster0.dnrwkpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
@@ -405,7 +405,7 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
         });
         console.log("all Users", result);
         
-
+        console.log(result.password);
         const token = createToken(result._id);
         res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
