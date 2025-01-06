@@ -63,7 +63,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage: storage, fileFilter: fileFilter});
 
 mongoose
-  .connect("mongodb+srv://vrajpatel479:<db_password>@cluster0.dnrwkpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+  .connect("mongodb+srv://vrajpatel479:<NGgGACUZOnnX7VOV>@cluster0.dnrwkpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
