@@ -13,7 +13,7 @@ const path = require("path");
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
 const app = express();
-const port = 4000;
+
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
@@ -63,7 +63,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage: storage, fileFilter: fileFilter});
 
 mongoose
-  .connect("mongodb+srv://vrajpatel479:<NGgGACUZOnnX7VOV>@cluster0.dnrwkpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+  .connect("mongodb+srv://vrajpatel479:NGgGACUZOnnX7VOV@cluster0.dnrwkpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
@@ -648,6 +648,8 @@ app.post('/Start',requireAuth,currentUser, async (req, res) => {
 
 
 
+
+const port = process.env.PORT || 4000;  // Default to 3000 if not defined
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
