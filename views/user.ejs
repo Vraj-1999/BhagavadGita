@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>Welcome to Spirituality</title>
+    <style>
+
+        .mainactive {
+            font-weight: bold;
+            font-size: 24px;
+            margin-right: auto;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .DrEdit {
+            width: 80%;
+            max-width: 950px;
+            margin: auto;
+            text-align: center;
+            background-color: white;
+            padding: 38px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .DrEdit h1 {
+            font-size: 30px;
+            color: #2e3d55;
+            margin-bottom: 20px;
+        }
+
+        .image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .table {
+            width: 60%;
+            margin: auto;
+            text-align: left;
+            font-size: 16px;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .table td {
+            padding: 10px;
+        }
+
+        .logout {
+            display: inline-block;
+            background-color: #bb8014;
+            color: white;
+            padding: 12px 20px;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .logout:hover {
+            background-color: #9a6811;
+        }
+        .user{
+            text-decoration: none;
+            color: black;
+        }
+
+        .dropdown-button {
+          background-color: #ffffff;
+    color: #000000;
+    padding: 0px 1px;
+    font-size: 16px;
+    border: white;
+    cursor: pointer;
+    transition: 1s;
+        }
+
+        /* Dropdown content (hidden by default) */
+        .dropdown{
+            padding-left: 93%;
+            width: 10%;
+        }
+    
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            transition: 1s;
+        }
+
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color when hovering over a link */
+        .dropdown-content a:hover {
+            
+            background-color: #ddd;
+        }
+
+        /* Show the dropdown menu when hovering over the button */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+
+
+        .edit-form {
+            display: none;  /* Hidden by default */
+
+           width: 80%;
+            max-width: 950px;
+            margin: auto;
+            text-align: center;
+            background-color: white;
+            padding: 38px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .edit-form input, .edit-form select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .edit-form button {
+            background-color: #ff8c00;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .edit-form button:hover {
+            background-color: #bb8014;
+        }
+@media screen and (max-width: 768px) {
+    /* Adjust profile section for smaller screens */
+    .profile {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    /* Adjust the DrEdit section for mobile */
+    .DrEdit {
+        width: 90%;  /* Take more width on mobile */
+        padding: 20px;
+    }
+
+    .DrEdit h1 {
+        font-size: 24px;
+    }
+
+    .image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .table {
+        width: 100%;  /* Full width for the table */
+        font-size: 14px;
+    }
+
+    .logout {
+        font-size: 16px;
+        padding: 10px 18px;
+    }
+
+    /* Make the dropdown button larger and adjust position */
+    .dropdown-button {
+        font-size: 18px;
+        padding: 8px;
+    }
+
+    .dropdown {
+        padding-left: 80%;
+        width: auto;
+    }
+
+    .edit-form {
+        width: 90%;  /* Full width on mobile */
+        padding: 20px;
+    }
+
+    .edit-form input, .edit-form select {
+        padding: 10px;
+    }
+
+    .edit-form button {
+        padding: 10px 18px;
+        font-size: 16px;
+    }
+}
+    </style>
+</head>
+<body>
+
+    <div class="topnav">
+        <a href="/home" class="logo">Bhagavad Gita</a>
+        <div class="nav-links">
+            <a href="/home">Chapters</a>
+            <a href="/quote">Quotes</a>
+        </div>
+        <div class="profile">
+            <a class="user" href="/users"><span>Hello,<b><%= user.first_name %></b></a></span>
+            <a href="/users"><img class="icon" src="/uploads/<%= user.profilePicture %>" onerror="this.onerror=null; this.src='/uploads/default.jpg';" alt="Profile"></a>
+        </div>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="DrEdit">
+        <div class="dropdown">
+            <button class="dropdown-button"><b>...</b></button>
+              <div class="dropdown-content">
+                <a id="Edit" href="">Edit</a>
+                  </div>
+              </div>
+              
+        <div>
+            <img src="/uploads/<%=user.profilePicture%>" onerror="this.onerror=null; this.src='/uploads/default.jpg';" alt="Profile Picture" class="image">
+        </div>
+
+
+        <h1><b><%=user.first_name%> <%=user.last_name%></b></h1>
+        <table class="table">
+            <tr>
+                <td><b>Gender:</b></td>
+                <td><%=user.gender%></td>
+            </tr>
+            <tr>
+                <td><b>Email:</b></td>
+                <td><%=user.user_name%></td>
+            </tr>
+            <tr>
+                <td><b>Change Password:</b></td>
+                <td>***********</td>
+            </tr>
+        </table>
+        <a class="logout" href="/logout">LogOut</a>
+    </div>
+
+
+    <div class="edit-form">
+        <h2>Edit Profile</h2>
+        <form id="editForm" action="/update-profile" method="POST" enctype="multipart/form-data">
+            <input type="text" name="first_name" value="<%= user.first_name %>" placeholder="First Name" >
+            <input type="text" name="last_name" value="<%= user.last_name %>" placeholder="Last Name" >
+            
+            <input class="data" type="file" id="profilePicture" name="profilePicture" accept="image/*">
+            
+            <select name="gender">
+                <option value="Male" <%= user.gender == 'Male' ? 'selected' : '' %>>Male</option>
+                <option value="Female" <%= user.gender == 'Female' ? 'selected' : '' %>>Female</option>
+                <option value="Other" <%= user.gender == 'Other' ? 'selected' : '' %>>Other</option>
+            </select>
+            <input class="data" type="email" id="user_name" name="user_name" placeholder="Enter your email" value="<%=user.user_name%>"><br>
+            <input type="password" name="password" placeholder="New Password">
+            <button type="submit">Save Changes</button>
+        </form>
+
+        <%if(locals.msg){%>
+            <b style="color: green;"><%=msg%>!!!</b>
+            <%}%>
+            
+            <%if(locals.Msg){%>
+                <b style="color: red;"><%=msg%>!!!</b>
+            <%}%>
+
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <div class="footer-container">
+          <div class="footer-name">
+            <p style="padding-top: 5px">Vraj Patel</p>
+          </div>
+  
+          <div class="footer-links">
+            <a
+              href="www.linkedin.com/in/vraj-patel-803248235"
+              class="icon-link"
+              target="_blank"
+            >
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a
+              href="https://github.com/Vraj-1999?tab=repositories"
+              class="icon-link"
+              target="_blank"
+            >
+              <i class="fab fa-github"></i>
+            </a>
+            <a href="mailto:vrajpatel479@example.com" class="icon-link">
+              <i class="fas fa-envelope"></i>
+            </a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 Bhagwat Geeta. All rights reserved.</p>
+        </div>
+      </footer>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const editButton = document.getElementById("Edit");
+    const editForm = document.querySelector(".edit-form");
+    const userInfo = document.querySelector(".DrEdit table");
+
+    editButton.addEventListener("click", function (e) {
+        e.preventDefault();  
+        
+       
+        if (editForm.style.display === "none" || editForm.style.display === "") {
+            editForm.style.display = "block"; 
+            userInfo.style.display = "none"; 
+            editButton.textContent = "Cancel"; 
+        } else {
+            editForm.style.display = "none"; 
+            userInfo.style.display = "block"; 
+            editButton.textContent = "Edit"; 
+        }
+    });
+});
+    </script>
+
+</body>
+</html>
