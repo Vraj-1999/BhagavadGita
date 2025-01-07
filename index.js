@@ -1,4 +1,4 @@
-require("dotenv").config
+require("dotenv").config;
 
 const express = require("express");
 const axios = require("axios");
@@ -12,67 +12,110 @@ const mongoose = require("mongoose");
 const { requireAuth, currentUser } = require("./middleware/authMiddleware");
 const multer = require("multer");
 const path = require("path");
-const nodemailer = require('nodemailer');
-const cron = require('node-cron');
-
+const nodemailer = require("nodemailer");
+const cron = require("node-cron");
 const app = express();
 const port = process.env.PORT || 4000;
+const cloudinary = require("cloudinary").v2;
 
-app.set('views', path.join(__dirname, 'views'));
+cloudinary.config = {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+};
+
+const uploadOnCLoudiary = async (localFilePath) => {
+  try {
+    if (!localFilePath) return null;
+    const response = await cloudinary.uploader.upload(localFilePath, {
+      resource_type: "auto",
+    });
+    console.log("file is uploded on cloudinary", response.url);
+    return response;
+  } catch (error) {
+    fs.unlinkSync(localFilePath)
+    return null
+  }
+};
+
+app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
-app.use(express.json()); 
+app.use(express.json());
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 // mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 mongoose
-  .connect("mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0L")
+  .connect(
+    "mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0L"
+  )
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
 const allowedImageTypes = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/bmp',
-  'image/tiff',
-  'image/webp',
-  'image/vnd.adobe.photoshop',
-  'image/svg+xml',
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/bmp",
+  "image/tiff",
+  "image/webp",
+  "image/vnd.adobe.photoshop",
+  "image/svg+xml",
 ];
 
 const allowedExtensions = [
-  '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', 
-  '.webp', '.psd', '.svg'
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".bmp",
+  ".tiff",
+  ".webp",
+  ".psd",
+  ".svg",
 ];
-
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); 
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); 
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
-
 const fileFilter = (req, file, cb) => {
   const mimeTypeValid = allowedImageTypes.includes(file.mimetype);
-  const extensionValid = allowedExtensions.includes(path.extname(file.originalname).toLowerCase());
+  const extensionValid = allowedExtensions.includes(
+    path.extname(file.originalname).toLowerCase()
+  );
 
   if (mimeTypeValid && extensionValid) {
     cb(null, true); // Accept the file
   } else {
-    cb(new Error('Only valid image files are allowed!'), false); // Reject the file
+    cb(new Error("Only valid image files are allowed!"), false); // Reject the file
   }
 };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter});
+const upload = multer({
+  storage: multer.diskStorage,
+  limits: { fileSize: 500000 },
+  fileFilter: fileFilter,
+});
 
+const uploadFile = async (filePath) => {
+  try {
+    const result = await cloudinary.uploader.upload(filePath);
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
+console.log(uploadFile);
 
 const URLChapters = "https://bhagavad-gita3.p.rapidapi.com/v2/chapters/";
 
@@ -189,14 +232,12 @@ const bhagavadGitaQuotes = [
   "The ignorant work for their own profit, Arjuna; the wise work for the welfare of the world, without thought for themselves. – Krishna",
   "The peace of God is with them whose mind and soul are in harmony, who are free from desire and wrath, who know their own soul. – The Gita",
   "Through selfless service, you will always be fruitful and find the fulfillment of your desires. – Bhagavad Gita",
-  "He who has no attachments can love others, For his love is pure and divine. And it is from those small acts of love you truly can be happy. – The Gita"
+  "He who has no attachments can love others, For his love is pure and divine. And it is from those small acts of love you truly can be happy. – The Gita",
 ];
 
-
-app.get("/",(req,res)=>{
-
+app.get("/", (req, res) => {
   res.render("land.ejs");
-})
+});
 
 app.get("/*", currentUser);
 
@@ -216,7 +257,6 @@ app.get("/home", requireAuth, async (req, res) => {
 });
 
 app.get("/chapter/:id", requireAuth, async (req, res) => {
-  
   try {
     const id = req.params.id;
     console.log(URLChapters + id);
@@ -323,39 +363,52 @@ app.get(
   }
 );
 
-app.post("/:chapterNum/verses/:verseNum/edit", requireAuth,currentUser, async (req, res) => {
-  const { comEdit, commentId } = req.body;  // Get the edited comment text and the comment ID
-  const chapNum = req.params.chapterNum;
-  const verid = req.params.verseNum;
+app.post(
+  "/:chapterNum/verses/:verseNum/edit",
+  requireAuth,
+  currentUser,
+  async (req, res) => {
+    const { comEdit, commentId } = req.body; // Get the edited comment text and the comment ID
+    const chapNum = req.params.chapterNum;
+    const verid = req.params.verseNum;
 
-  try {
-    if (comEdit && commentId) {
-      // Update the comment with the provided ID
-      await comment.findByIdAndUpdate(commentId, { text_area: comEdit });
+    try {
+      if (comEdit && commentId) {
+        // Update the comment with the provided ID
+        await comment.findByIdAndUpdate(commentId, { text_area: comEdit });
 
-      // Fetch the updated verse and comments
-      const verse = await axios.get(URLChapters + chapNum + "/verses/" + verid + "/", config);
+        // Fetch the updated verse and comments
+        const verse = await axios.get(
+          URLChapters + chapNum + "/verses/" + verid + "/",
+          config
+        );
+        const finalVerse = verse.data;
+        const Comments = await comment.find();
+
+        // Render the updated verse with comments
+        res.render("verse.ejs", { verse: finalVerse, COM: Comments });
+      } else {
+        // If no comment was provided or ID missing, render the verse without updating
+        const verse = await axios.get(
+          URLChapters + chapNum + "/verses/" + verid + "/",
+          config
+        );
+        const finalVerse = verse.data;
+        res.render("verse.ejs", { verse: finalVerse });
+      }
+    } catch (error) {
+      console.error(error);
+      // Render the error page
+      const verse = await axios.get(
+        URLChapters + chapNum + "/verses/" + verid + "/",
+        config
+      );
       const finalVerse = verse.data;
       const Comments = await comment.find();
-
-      // Render the updated verse with comments
       res.render("verse.ejs", { verse: finalVerse, COM: Comments });
-    } else {
-      // If no comment was provided or ID missing, render the verse without updating
-      const verse = await axios.get(URLChapters + chapNum + "/verses/" + verid + "/", config);
-      const finalVerse = verse.data;
-      res.render("verse.ejs", { verse: finalVerse });
     }
-  } catch (error) {
-    console.error(error);
-    // Render the error page
-    const verse = await axios.get(URLChapters + chapNum + "/verses/" + verid + "/", config);
-    const finalVerse = verse.data;
-    const Comments = await comment.find();
-    res.render("verse.ejs", { verse: finalVerse, COM: Comments });
   }
-});
-
+);
 
 app.get("/signup", async (req, res) => {
   try {
@@ -381,17 +434,16 @@ const createToken = (id) => {
   });
 };
 
-
-
 app.post("/signup", upload.single("profilePicture"), async (req, res) => {
-
   try {
     const body = req.body;
     const profilePicture = req.file?.filename || null;
     const username = req.body.user_name;
     const user = await signs.findOne({ username });
     if (!req.file) {
-      return res.status(400).send('File upload failed. Make sure it is an image.');
+      return res
+        .status(400)
+        .send("File upload failed. Make sure it is an image.");
     }
 
     if (username != user) {
@@ -411,18 +463,15 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
           emailEnabled: true,
         });
         console.log("all Users", result);
-        
+
         console.log(result.password);
         const token = createToken(result._id);
         res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-        
         const AllUsers = await signs.find();
         console.log("all Users", AllUsers);
 
         res.render("signup.ejs", { msg: "Account Created Succesfully" });
-
-
       } else {
         res.render("signup.ejs", { Msg: "All Field Required" });
       }
@@ -433,7 +482,6 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
     res.render("signup.ejs", { msg: "error" });
   }
 });
-
 
 app.post("/login", async (req, res) => {
   const user_name = req.body.user_name;
@@ -464,24 +512,25 @@ app.post(
   currentUser,
   upload.single("profilePicture"),
   async (req, res) => {
-    
     try {
       const { body, file, user } = req;
 
       if (!user) return res.status(401).send("Unauthorized");
 
       if (body.first_name) {
-        await signs.findByIdAndUpdate(user._id, { first_name: body.first_name });
+        await signs.findByIdAndUpdate(user._id, {
+          first_name: body.first_name,
+        });
         await comment.findOneAndUpdate(
-          { secret_id: user._id },          // Query to find the document by secret_id
-          { $set: { first_name: body.first_name } }  // Update operation
+          { secret_id: user._id }, // Query to find the document by secret_id
+          { $set: { first_name: body.first_name } } // Update operation
         );
       }
       if (body.last_name) {
         await signs.findByIdAndUpdate(user._id, { last_name: body.last_name });
         await comment.findOneAndUpdate(
-          { secret_id: user._id },          
-          { $set: { last_name: body.last_name } }  
+          { secret_id: user._id },
+          { $set: { last_name: body.last_name } }
         );
       }
       if (body.gender) {
@@ -497,10 +546,12 @@ app.post(
         await signs.findByIdAndUpdate(user._id, { password: hashedPassword });
       }
       if (file?.filename) {
-        await signs.findByIdAndUpdate(user._id, { profilePicture: file.filename });
+        await signs.findByIdAndUpdate(user._id, {
+          profilePicture: file.filename,
+        });
         await comment.findOneAndUpdate(
-          { secret_id: user._id },          // Query to find the document by secret_id
-          { $set: { profilePicture: file.filename } }  // Update operation
+          { secret_id: user._id }, // Query to find the document by secret_id
+          { $set: { profilePicture: file.filename } } // Update operation
         );
       }
 
@@ -515,7 +566,6 @@ app.post(
     }
   }
 );
-
 
 app.get(
   "/:chapterNum/verses/:verseNum/:commentId",
@@ -560,102 +610,107 @@ app.get(
 );
 
 app.get("/users", async (req, res) => {
-  
   res.render("user.ejs");
 });
 
 app.get("/logout", async (req, res) => {
-
-
   res.cookie("jwt", "", { maxAge: 1 });
   res.redirect("/login");
 });
 
-app.get('/quote', async(req, res) => {
+app.get("/quote", async (req, res) => {
   const email = req.user.user_name;
-  const user = await signs.findOne({})
+  const user = await signs.findOne({});
   console.log(user.emailEnabled);
-  const quote = bhagavadGitaQuotes[Math.floor(Math.random() * bhagavadGitaQuotes.length)];
+  const quote =
+    bhagavadGitaQuotes[Math.floor(Math.random() * bhagavadGitaQuotes.length)];
 
-  if(user.emailEnabled){
-    res.render("quote.ejs", {SlokLine : quote, button:"Stop"})
-  }else{
-    res.render("quote.ejs",{SlokLine : quote, button: "Start"})
+  if (user.emailEnabled) {
+    res.render("quote.ejs", { SlokLine: quote, button: "Stop" });
+  } else {
+    res.render("quote.ejs", { SlokLine: quote, button: "Start" });
   }
 });
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail'  ,
-    auth: {
-        user: 'bhagwatgeeta337@gmail.com',
-        pass: 'ihyf tkya nkyh mbzy' 
-    }
+  service: "gmail",
+  auth: {
+    user: "bhagwatgeeta337@gmail.com",
+    pass: "ihyf tkya nkyh mbzy",
+  },
 });
 
-
 const sendEmail = (email) => {
-  console.log('Attempting to send email to:', email);
+  console.log("Attempting to send email to:", email);
 
-    const mailOptions = {
-        from: 'bhagwatgeeta337@gmail.com',
-        to: email,
-        subject: 'Good Morning! Have a Great Day!!',
-        text: bhagavadGitaQuotes[Math.floor(Math.random() * bhagavadGitaQuotes.length)]
-    };
+  const mailOptions = {
+    from: "bhagwatgeeta337@gmail.com",
+    to: email,
+    subject: "Good Morning! Have a Great Day!!",
+    text: bhagavadGitaQuotes[
+      Math.floor(Math.random() * bhagavadGitaQuotes.length)
+    ],
+  };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log('Error:', error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error:", error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
 };
 
-cron.schedule('0 9 * * *', async () => {
+cron.schedule("0 9 * * *", async () => {
   const users = await signs.find({ emailEnabled: true });
 
   users.forEach((user) => {
-      sendEmail(user.user_name);
+    sendEmail(user.user_name);
   });
 
-  console.log('Emails sent to all registered users at 9:00 AM every day!');
+  console.log("Emails sent to all registered users at 9:00 AM every day!");
 });
 
-app.post('/Stop',requireAuth,currentUser, async (req, res) => {
+app.post("/Stop", requireAuth, currentUser, async (req, res) => {
   const email = req.user.user_name;
   const user = await signs.findOne({ user_name: email });
-    console.log(user.emailEnabled);
-  const quote = bhagavadGitaQuotes[Math.floor(Math.random() * bhagavadGitaQuotes.length)];
+  console.log(user.emailEnabled);
+  const quote =
+    bhagavadGitaQuotes[Math.floor(Math.random() * bhagavadGitaQuotes.length)];
 
-
-    if (user) {
-        user.emailEnabled = false;
-        await user.save();
-        res.render("quote.ejs", {SlokLine : quote, button:"Start", start :"Currently You are will not receiving daily Quote through Email. if you want to change that use the toggle button above ."});
-      } else {
-          res.render('quote.ejs',{SlokLine : quote});
-    }
+  if (user) {
+    user.emailEnabled = false;
+    await user.save();
+    res.render("quote.ejs", {
+      SlokLine: quote,
+      button: "Start",
+      start:
+        "Currently You are will not receiving daily Quote through Email. if you want to change that use the toggle button above .",
+    });
+  } else {
+    res.render("quote.ejs", { SlokLine: quote });
+  }
 });
 
-app.post('/Start',requireAuth,currentUser, async (req, res) => {
-  const email = req.user.user_name;    
+app.post("/Start", requireAuth, currentUser, async (req, res) => {
+  const email = req.user.user_name;
   const user = await signs.findOne({ user_name: email });
   console.log(user.emailEnabled);
-  const quote = bhagavadGitaQuotes[Math.floor(Math.random() * bhagavadGitaQuotes.length)];
+  const quote =
+    bhagavadGitaQuotes[Math.floor(Math.random() * bhagavadGitaQuotes.length)];
 
-    if (user) {
-        user.emailEnabled = true;
-        await user.save();
-        res.render("quote.ejs", {SlokLine : quote, button:"Stop", stop :"Currently You are receiving daily Quote through Email. if you want to change that use the toggle button above ."});
-    } else {
-      res.render('quote.ejs', {SlokLine : quote});
-    }
+  if (user) {
+    user.emailEnabled = true;
+    await user.save();
+    res.render("quote.ejs", {
+      SlokLine: quote,
+      button: "Stop",
+      stop: "Currently You are receiving daily Quote through Email. if you want to change that use the toggle button above .",
+    });
+  } else {
+    res.render("quote.ejs", { SlokLine: quote });
+  }
 });
-
-
-
-
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
