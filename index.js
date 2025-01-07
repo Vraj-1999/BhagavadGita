@@ -1,3 +1,5 @@
+require("dotenv").config
+
 const express = require("express");
 const axios = require("axios");
 const bodyParser = require("body-parser");
@@ -12,7 +14,9 @@ const multer = require("multer");
 const path = require("path");
 const nodemailer = require('nodemailer');
 const cron = require('node-cron');
+
 const app = express();
+const port = process.env.PORT || 4000;
 
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static("public"));
@@ -21,6 +25,12 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+// mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+mongoose
+  .connect("mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0L")
+  .then(() => console.log("Db COnnected"))
+  .catch((err) => console.log(err));
 
 const allowedImageTypes = [
   'image/jpeg',
@@ -62,10 +72,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: fileFilter});
 
-mongoose
-  .connect("mongodb+srv://vrajpatel479:NGgGACUZOnnX7VOV@cluster0.dnrwkpe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-  .then(() => console.log("Db COnnected"))
-  .catch((err) => console.log(err));
+
 
 const URLChapters = "https://bhagavad-gita3.p.rapidapi.com/v2/chapters/";
 
@@ -649,7 +656,7 @@ app.post('/Start',requireAuth,currentUser, async (req, res) => {
 
 
 
-const port = process.env.PORT || 4000;  // Default to 3000 if not defined
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
