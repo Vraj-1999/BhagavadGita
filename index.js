@@ -17,27 +17,6 @@ const cron = require("node-cron");
 const app = express();
 const port = process.env.PORT || 4000;
 const cloudinary = require("cloudinary").v2;
-
-cloudinary.config = {
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-};
-
-const uploadOnCLoudiary = async (localFilePath) => {
-  try {
-    if (!localFilePath) return null;
-    const response = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto",
-    });
-    console.log("file is uploded on cloudinary", response.url);
-    return response;
-  } catch (error) {
-    fs.unlinkSync(localFilePath)
-    return null
-  }
-};
-
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
@@ -45,7 +24,9 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-// mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 mongoose
   .connect(
@@ -54,68 +35,13 @@ mongoose
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
-const allowedImageTypes = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/bmp",
-  "image/tiff",
-  "image/webp",
-  "image/vnd.adobe.photoshop",
-  "image/svg+xml",
-];
 
-const allowedExtensions = [
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".gif",
-  ".bmp",
-  ".tiff",
-  ".webp",
-  ".psd",
-  ".svg",
-];
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  const mimeTypeValid = allowedImageTypes.includes(file.mimetype);
-  const extensionValid = allowedExtensions.includes(
-    path.extname(file.originalname).toLowerCase()
-  );
-
-  if (mimeTypeValid && extensionValid) {
-    cb(null, true); // Accept the file
-  } else {
-    cb(new Error("Only valid image files are allowed!"), false); // Reject the file
-  }
+cloudinary.config = {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 };
-
-const upload = multer({
-  storage: multer.diskStorage,
-  limits: { fileSize: 500000 },
-  fileFilter: fileFilter,
-});
-
-const uploadFile = async (filePath) => {
-  try {
-    const result = await cloudinary.uploader.upload(filePath);
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-console.log(uploadFile);
 
 const URLChapters = "https://bhagavad-gita3.p.rapidapi.com/v2/chapters/";
 
@@ -435,16 +361,26 @@ const createToken = (id) => {
 };
 
 app.post("/signup", upload.single("profilePicture"), async (req, res) => {
+ 
   try {
     const body = req.body;
     const profilePicture = req.file?.filename || null;
     const username = req.body.user_name;
     const user = await signs.findOne({ username });
-    if (!req.file) {
-      return res
-        .status(400)
-        .send("File upload failed. Make sure it is an image.");
-    }
+    
+    const result = await cloudinary.uploader.upload_stream(
+      { resource_type: 'image' },
+      async (error, result) => {
+          if (error) {
+              console.error(error);
+              return res.status(500).send('Error uploading image to Cloudinary');
+          }
+          const imageUrl = result.secure_url;
+          console.log(imageUrl);
+          res.render('upload', { imageUrl });
+      }
+  );
+result.end(req.file.buffer);
 
     if (username != user) {
       if (
@@ -453,19 +389,19 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
         body.user_name ||
         body.password
       ) {
-        const result = await signs.create({
+        const NewUser = await signs.create({
           first_name: body.first_name,
           last_name: body.last_name,
           gender: body.gender,
           user_name: body.user_name,
           password: body.password,
-          profilePicture: req.file.filename,
+          profilePicture: imageUrl,
           emailEnabled: true,
         });
-        console.log("all Users", result);
 
-        console.log(result.password);
-        const token = createToken(result._id);
+        console.log("all Users", NewUser);
+        console.log(NewUser.password);
+        const token = createToken(NewUser._id);
         res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
         const AllUsers = await signs.find();
