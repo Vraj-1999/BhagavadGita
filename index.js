@@ -1,5 +1,6 @@
 require("dotenv").config;
 
+const cloudinary = require("cloudinary").v2;
 const express = require("express");
 const axios = require("axios");
 const bodyParser = require("body-parser");
@@ -16,7 +17,7 @@ const nodemailer = require("nodemailer");
 const cron = require("node-cron");
 const app = express();
 const port = process.env.PORT || 4000;
-const cloudinary = require("cloudinary").v2;
+
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
@@ -29,19 +30,21 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 mongoose
-  .connect(
-    "mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0L"
-  )
+  .connect("mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0L")
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
 
 
-cloudinary.config = {
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-};
+  cloudinary.config({
+    cloud_name: "vrajpatel1999",
+    api_key: "436343379635838",
+    api_secret: "1ficVzwvJ5SVdsDFBSR2BC7I1Rk",
+    secure: true
+  });
+  
+
+console.log(cloudinary.config())
 
 const URLChapters = "https://bhagavad-gita3.p.rapidapi.com/v2/chapters/";
 
@@ -360,64 +363,111 @@ const createToken = (id) => {
   });
 };
 
-app.post("/signup", upload.single("profilePicture"), async (req, res) => {
+// app.post("/signup", upload.single("profilePicture"), async (req, res) => {
  
+//   try {
+//     const body = req.body;
+//     const username = req.body.user_name;
+//     const user = await signs.findOne({ username });
+
+//     if (username != user) {
+//       if (
+//         body.first_name ||
+//         body.last_name ||
+//         body.user_name ||
+//         body.password
+//       ) {
+//         const NewUser = await signs.create({
+//           first_name: body.first_name,
+//           last_name: body.last_name,
+//           gender: body.gender,
+//           user_name: body.user_name,
+//           password: body.password,
+//           profilePicture: imageUrl,
+//           emailEnabled: true,
+//         });
+
+//         console.log("all Users", NewUser);
+//         console.log(NewUser.password);
+        
+//         const token = createToken(NewUser._id);
+//         res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+
+//         const AllUsers = await signs.find();
+//         console.log("all Users", AllUsers);
+
+//         res.render("signup.ejs", { msg: "Account Created Succesfully" });
+//       } else {
+//         res.render("signup.ejs", { Msg: "All Field Required" });
+//       }
+//     } else {
+//       res.render("signup.ejs", { Msg: "Username allready used" });
+//     }
+//   } catch (error) {
+//     res.render("signup.ejs", { msg: "error" });
+//   }
+// });
+
+app.post("/signup", upload.single("profilePicture"), async (req, res) => {
   try {
     const body = req.body;
-    const profilePicture = req.file?.filename || null;
     const username = req.body.user_name;
     const user = await signs.findOne({ username });
-    
-    const result = await cloudinary.uploader.upload_stream(
-      { resource_type: 'image' },
-      async (error, result) => {
+    if (user) {
+      return res.render("signup.ejs", { Msg: "Username already used" });
+    }
+
+    if (
+      body.first_name &&
+      body.last_name &&
+      body.user_name &&
+      body.password
+    ) {
+      cloudinary.uploader.upload_stream(
+        { resource_type: "image" },
+        async (error, result) => {
           if (error) {
-              console.error(error);
-              return res.status(500).send('Error uploading image to Cloudinary');
+            console.error(error);
+            return res.status(500).send("Error uploading image to Cloudinary");
           }
-          const imageUrl = result.secure_url;
+
+          const imageUrl = result.secure_url; // Get the image URL after upload
           console.log(imageUrl);
-          res.render('upload', { imageUrl });
-      }
-  );
-result.end(req.file.buffer);
 
-    if (username != user) {
-      if (
-        body.first_name ||
-        body.last_name ||
-        body.user_name ||
-        body.password
-      ) {
-        const NewUser = await signs.create({
-          first_name: body.first_name,
-          last_name: body.last_name,
-          gender: body.gender,
-          user_name: body.user_name,
-          password: body.password,
-          profilePicture: imageUrl,
-          emailEnabled: true,
-        });
+          // Create the new user after the image is uploaded
+          const NewUser = await signs.create({
+            first_name: body.first_name,
+            last_name: body.last_name,
+            gender: body.gender,
+            user_name: body.user_name,
+            password: body.password,
+            profilePicture: imageUrl, // Store the Cloudinary URL
+            emailEnabled: true,
+          });
 
-        console.log("all Users", NewUser);
-        console.log(NewUser.password);
-        const token = createToken(NewUser._id);
-        res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+          console.log("All Users", NewUser);
 
-        const AllUsers = await signs.find();
-        console.log("all Users", AllUsers);
+          // Create token and set cookie
+          const token = createToken(NewUser._id);
+          res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
-        res.render("signup.ejs", { msg: "Account Created Succesfully" });
-      } else {
-        res.render("signup.ejs", { Msg: "All Field Required" });
-      }
+          // Fetch all users and render success message
+          const AllUsers = await signs.find();
+          console.log("All Users", AllUsers);
+
+          res.render("signup.ejs", { msg: "Account Created Successfully" });
+        }
+      ).end(req.file.buffer); // This starts the upload and sends the file buffer
     } else {
-      res.render("signup.ejs", { Msg: "Username allready used" });
+      res.render("signup.ejs", { Msg: "All fields are required" });
     }
   } catch (error) {
-    res.render("signup.ejs", { msg: "error" });
+    console.error(error);
+    res.render("signup.ejs", { msg: "An error occurred" });
   }
 });
+
+
 
 app.post("/login", async (req, res) => {
   const user_name = req.body.user_name;
