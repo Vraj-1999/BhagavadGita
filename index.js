@@ -489,6 +489,69 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// app.post(
+//   "/update-profile",
+//   requireAuth,
+//   currentUser,
+//   upload.single("profilePicture"),
+//   async (req, res) => {
+//     try {
+//       const { body, file, user } = req;
+
+//       if (!user) return res.status(401).send("Unauthorized");
+      
+//       if (body.first_name) {
+//         await signs.findByIdAndUpdate(user._id, {
+//           first_name: body.first_name,
+//         });
+//         await comment.findOneAndUpdate(
+//           { secret_id: user._id }, // Query to find the document by secret_id
+//           { $set: { first_name: body.first_name } } // Update operation
+//         );
+//       }
+//       if (body.last_name) {
+//         await signs.findByIdAndUpdate(user._id, { last_name: body.last_name });
+//         await comment.findOneAndUpdate(
+//           { secret_id: user._id },
+//           { $set: { last_name: body.last_name } }
+//         );
+//       }
+//       if (body.gender) {
+//         await signs.findByIdAndUpdate(user._id, { gender: body.gender });
+//       }
+//       if (body.user_name) {
+//         await signs.findByIdAndUpdate(user._id, { user_name: body.user_name });
+//       }
+
+//       if (body.password) {
+//         const salt = await bcrypt.genSalt(); // Adjust salt rounds if needed
+//         const hashedPassword = await bcrypt.hash(body.password, salt);
+//         await signs.findByIdAndUpdate(user._id, { password: hashedPassword });
+//       }
+//       if (file?.filename) {
+//         await signs.findByIdAndUpdate(user._id, {
+//           profilePicture: file.filename,
+//         });
+
+//         await comment.findOneAndUpdate(
+//           { secret_id: user._id }, // Query to find the document by secret_id
+//           { $set: { profilePicture: file.filename } } // Update operation
+//         );
+//       }
+
+//       const token = createToken(user._id);
+//       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+
+//       console.log("Profile updated successfully");
+//       res.redirect("/users");
+//     } catch (error) {
+//       console.error("Error updating profile:", error);
+//       res.status(500).send("An error occurred");
+//     }
+//   }
+// );
+
+
 app.post(
   "/update-profile",
   requireAuth,
@@ -500,15 +563,17 @@ app.post(
 
       if (!user) return res.status(401).send("Unauthorized");
 
+      // 1. Update fields like first_name, last_name, gender, etc.
       if (body.first_name) {
         await signs.findByIdAndUpdate(user._id, {
           first_name: body.first_name,
         });
         await comment.findOneAndUpdate(
           { secret_id: user._id }, // Query to find the document by secret_id
-          { $set: { first_name: body.first_name } } // Update operation
+          { $set: { first_name: body.first_name } }
         );
       }
+
       if (body.last_name) {
         await signs.findByIdAndUpdate(user._id, { last_name: body.last_name });
         await comment.findOneAndUpdate(
@@ -516,9 +581,11 @@ app.post(
           { $set: { last_name: body.last_name } }
         );
       }
+
       if (body.gender) {
         await signs.findByIdAndUpdate(user._id, { gender: body.gender });
       }
+
       if (body.user_name) {
         await signs.findByIdAndUpdate(user._id, { user_name: body.user_name });
       }
@@ -528,17 +595,35 @@ app.post(
         const hashedPassword = await bcrypt.hash(body.password, salt);
         await signs.findByIdAndUpdate(user._id, { password: hashedPassword });
       }
-      if (file?.filename) {
+
+      // 2. Upload image to Cloudinary if a file is uploaded
+      let imageUrl = user.profilePicture; // Keep the existing image URL if no new image is uploaded
+      if (file?.buffer) {
+        const result = await new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            { resource_type: "image" },
+            (error, result) => {
+              if (error) {
+                return reject("Error uploading image to Cloudinary");
+              }
+              resolve(result);
+            }
+          ).end(file.buffer); // Send the image buffer to Cloudinary
+        });
+
+        imageUrl = result.secure_url; // Get the Cloudinary URL of the uploaded image
+        // Update user profile picture with the new Cloudinary URL
         await signs.findByIdAndUpdate(user._id, {
-          profilePicture: file.filename,
+          profilePicture: imageUrl,
         });
 
         await comment.findOneAndUpdate(
           { secret_id: user._id }, // Query to find the document by secret_id
-          { $set: { profilePicture: file.filename } } // Update operation
+          { $set: { profilePicture: imageUrl } } // Update comment collection as well
         );
       }
 
+      // 3. Generate a new JWT token after profile update
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
