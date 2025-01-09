@@ -43,9 +43,6 @@ mongoose
     secure: true
   });
   
-
-console.log(cloudinary.config())
-
 const URLChapters = "https://bhagavad-gita3.p.rapidapi.com/v2/chapters/";
 
 const config = {
@@ -535,6 +532,7 @@ app.post(
         await signs.findByIdAndUpdate(user._id, {
           profilePicture: file.filename,
         });
+
         await comment.findOneAndUpdate(
           { secret_id: user._id }, // Query to find the document by secret_id
           { $set: { profilePicture: file.filename } } // Update operation

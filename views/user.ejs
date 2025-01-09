@@ -240,7 +240,7 @@
         </div>
         <div class="profile">
             <a class="user" href="/users"><span>Hello,<b><%= user.first_name %></b></a></span>
-            <a href="/users"><img class="icon" src="/uploads/<%= user.profilePicture %>" onerror="this.onerror=null; this.src='/uploads/default.jpg';" alt="Profile"></a>
+            <a href="/users"><img class="icon" src="<%= user.profilePicture %>" onerror="this.onerror=null; this.src='/uploads/default.jpg';" alt="Profile"></a>
         </div>
     </div>
 
