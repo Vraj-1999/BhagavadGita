@@ -755,7 +755,7 @@ const sendEmail = (email) => {
     }
   });
 };
-cron.schedule("14 30 * * *", async () => {
+cron.schedule("30 14 * * *", async () => {
   const users = await signs.find({ emailEnabled: true });
 
   users.forEach((user) => {
