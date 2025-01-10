@@ -755,12 +755,13 @@ const sendEmail = (email) => {
     }
   });
 };
-
-cron.schedule("0 9 * * *", async () => {
+console.log(new Date())
+cron.schedule("13 18 * * *", async () => {
   const users = await signs.find({ emailEnabled: true });
 
   users.forEach((user) => {
     sendEmail(user.user_name);
+    console.log(user.user_name);
   });
 
   console.log("Emails sent to all registered users at 9:00 AM every day!");
