@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
 
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <title>Welcome to Bhagavad Gita</title>
-    
+
     <style>
         /* Global Styles */
         body {
+
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right,#ffe6ba, #a6d0ef); /* Modern gradient */
-            color: #fff;
             overflow-x: hidden;
+        }
+
+        .back {
+            background-image: url("/images/chakra.png");
+
         }
 
         /* Hero Section */
@@ -29,13 +31,14 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100000000px;
+            height: 45vh;
             background-size: cover;
             background-position: center;
             text-align: center;
         }
 
         .hero h1 {
+            margin-top: 20%;
             font-size: 60px;
             margin-bottom: 20px;
             text-transform: uppercase;
@@ -45,9 +48,9 @@
 
         .hero p {
             font-size: 24px;
-    margin-bottom: 30px;
-    max-width: 700px;
-    color: rgb(0 0 0 / 95%);
+            margin-bottom: 30px;
+            max-width: 700px;
+            color: rgb(0 0 0 / 95%);
         }
 
         .cta-button {
@@ -67,12 +70,15 @@
         }
 
         /* Statistics Section */
+
         .statistics {
             padding: 60px 20px;
             background-color: #222;
             text-align: center;
             color: #fff;
+            margin-bottom: 4.5%;
         }
+
 
         .statistics h2 {
             font-size: 40px;
@@ -104,18 +110,23 @@
 
         /* Features Section */
         .features {
+            gap: 20px;
+            width: 31%;
+            margin-top: 13%;
             display: flex;
+            flex-direction: row;
             justify-content: center;
-            flex-wrap: wrap;
-            margin: 100px 0;
+            margin: 148px 0;
             text-align: center;
+            height: 57%;
         }
 
         .feature {
             flex: 1;
-            min-width: 250px;
-            max-width: 400px;
-            margin: 20px;
+            min-width: 100%;
+            /* Ensures the feature takes full width */
+            margin: 8px 0;
+            /* Adds space between each feature */
             padding: 30px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
@@ -132,7 +143,6 @@
             font-size: 28px;
             margin-bottom: 15px;
             color: #be6d00;
-
         }
 
         .feature p {
@@ -141,29 +151,177 @@
             line-height: 1.5;
         }
 
-        
         /* Responsive Styles */
         @media (max-width: 768px) {
+
+            /* Global Styles */
+            body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background: linear-gradient(to right, #ffe6ba, #a6d0ef);
+                /* Modern gradient */
+                color: #fff;
+                overflow-x: hidden;
+            }
+
+            /* Hero Section */
+            .hero {
+                background-image: url("/images/chakra.png");
+
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 30vh;
+                background-size: cover;
+                background-position: center;
+                text-align: center;
+                margin: 0px;
+            }
+
+            .hero h1 {
+                padding: 5px;
+                margin-top: 54%;
+                font-size: 30px;
+                margin-bottom: 20px;
+                text-transform: uppercase;
+                font-weight: bold;
+                color: #be6d00;
+            }
+
+            .hero p {
+                font-size: 15px;
+                margin-bottom: 30px;
+                max-width: 700px;
+                color: rgb(0 0 0 / 95%);
+            }
+
+            .cta-button {
+                padding: 15px 40px;
+                font-size: 20px;
+                background-color: #ff6a00;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                cursor: pointer;
+                text-decoration: none;
+                transition: background-color 0.3s ease;
+            }
+
+            .cta-button:hover {
+                background-color: #ff3f00;
+            }
+
+            /* Statistics Section */
+            .statistics {
+                padding: 60px 20px;
+                background-color: #222;
+                text-align: center;
+                color: #fff;
+                margin-bottom: 13.5%;
+            }
+
+            .statistics h2 {
+                font-size: 31px;
+                margin-bottom: 20px;
+                color: #ff6a00;
+            }
+
+            .stats-container {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin: 40px 0;
+            }
+
+            .stat {
+                margin: 20px;
+                text-align: center;
+            }
+
+            .stat h3 {
+                font-size: 31px;
+                color: #ff6a00;
+                margin-bottom: 10px;
+            }
+
+            .stat p {
+                font-size: 18px;
+            }
+
+            /* Features Section */
+
+
+            .feature:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+
+            .feature h3 {
+                font-size: 28px;
+                margin-bottom: 15px;
+                color: #be6d00;
+
+            }
+
+            .feature p {
+                font-size: 18px;
+                color: #000000;
+                line-height: 1.5;
+            }
+
             .features {
+                width: 100%;
+                margin-top: 44%;
                 flex-direction: column;
             }
+
             .feature {
                 min-width: 100%;
                 margin: 20px 0;
             }
+
         }
     </style>
 </head>
+
 <body>
 
     <!-- Hero Section -->
-    <div class="hero">
-        <h1>Welcome to the Bhagavad Gita</h1>
-        <p>Explore the timeless wisdom of the Bhagavad Gita. Unlock your inner potential with spiritual insights and powerful teachings.</p>
-        <a href="/login" class="cta-button">Get Started</a>
+    <div class="back">
+        <div class="hero">
+            <h1>Welcome to the Bhagavad Geeta</h1>
+            <p>Explore the timeless wisdom of the Bhagavad Gita. Unlock your inner potential with spiritual insights and
+                powerful teachings.</p>
+            <a href="/login" class="cta-button">Get Started</a>
+        </div>
     </div>
 
+
     <!-- Statistics Section -->
+
+
+    <!-- Features Section -->
+    <section class="features" id="get-started">
+        <div class="feature">
+            <h3>Easy to Use</h3>
+            <p>Our platform is designed with simplicity in mind. Access chapters and slokas (verses) anytime, anywhere.
+            </p>
+        </div>
+        <div class="feature">
+            <h3>Community Engagement</h3>
+            <p>Every user can comment on specific slokas, sharing their interpretations. These comments allow others to
+                explore diverse perspectives on the same verse.</p>
+        </div>
+        <div class="feature">
+            <h3>Daily inspiring Quotes</h3>
+            <p>Receive an inspiring sloka from the Bhagwat Geeta in their inbox daily, encouraging regular engagement
+                and reflection.
+            </p>
+        </div>
+    </section>
     <section class="statistics">
         <h2>Bhagavad Gita - A Source of Inspiration</h2>
         <div class="stats-container">
@@ -184,57 +342,33 @@
                 <p>Ranked as one of the most important spiritual books in the world.</p>
             </div>
         </div>
-        <p>It is one of the most revered texts of spirituality, guiding individuals through life's challenges with its profound wisdom.</p>
+        <p>It is one of the most revered texts of spirituality, guiding individuals through life's challenges with its
+            profound wisdom.</p>
     </section>
-
-    <!-- Features Section -->
-    <section class="features" id="get-started">
-        <div class="feature">
-            <h3>Easy to Use</h3>
-            <p>Our platform is designed with simplicity in mind. Access chapters and slokas (verses) anytime, anywhere.</p>
-        </div>
-        <div class="feature">
-            <h3>Community Engagement</h3>
-            <p>Every user can comment on specific slokas, sharing their interpretations. These comments allow others to explore diverse perspectives on the same verse.</p>
-        </div>
-        <div class="feature">
-            <h3>Daily inspiring Quotes</h3>
-            <p>Receive an inspiring sloka from the Bhagwat Geeta in their inbox daily, encouraging regular engagement and reflection.
-            </p>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
-          <div class="footer-name">
-            <p style="padding-top: 5px">Vraj Patel</p>
-          </div>
-  
-          <div class="footer-links">
-            <a
-              href="https://www.linkedin.com/in/vraj-patel-803248235/"
-              class="icon-link"
-              target="_blank"
-            >
-              <i class="fab fa-linkedin"></i>
-            </a>
-            <a
-              href="https://github.com/Vraj-1999?tab=repositories"
-              class="icon-link"
-              target="_blank"
-            >
-              <i class="fab fa-github"></i>
-            </a>
-            <a href="mailto:vrajpatel479@@example.com" class="icon-link">
-              <i class="fas fa-envelope"></i>
-            </a>
-          </div>
+            <div class="footer-name">
+                <p style="padding-top: 5px">Vraj Patel</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="https://www.linkedin.com/in/vraj-patel-803248235/" class="icon-link" target="_blank">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com/Vraj-1999?tab=repositories" class="icon-link" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="mailto:vrajpatel479@@example.com" class="icon-link">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2024 Bhagwat Geeta. All rights reserved.</p>
+            <p>&copy; 2024 Bhagwat Geeta. All rights reserved.</p>
         </div>
-  
+
 
 </body>
+
 </html>
