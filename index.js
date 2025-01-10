@@ -409,6 +409,7 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
   try {
     const body = req.body;
     const username = req.body.user_name;
+    console.log(req.file);
     const user = await signs.findOne({ username });
     if (user) {
       return res.render("signup.ejs", { Msg: "Username already used" });
@@ -420,6 +421,9 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
       body.user_name &&
       body.password
     ) {
+      
+      if(req.file){
+
       cloudinary.uploader.upload_stream(
         { resource_type: "image" },
         async (error, result) => {
@@ -455,6 +459,28 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
           res.render("signup.ejs", { msg: "Account Created Successfully" });
         }
       ).end(req.file.buffer); // This starts the upload and sends the file buffer
+    }else{
+      const NewUser = await signs.create({
+        first_name: body.first_name,
+        last_name: body.last_name,
+        gender: body.gender,
+        user_name: body.user_name,
+        password: body.password,
+        emailEnabled: true,
+      });
+
+      console.log("All Users", NewUser);
+
+      // Create token and set cookie
+      const token = createToken(NewUser._id);
+      res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+
+      // Fetch all users and render success message
+      const AllUsers = await signs.find();
+      console.log("All Users", AllUsers);
+
+      res.render("signup.ejs", { msg: "Account Created Successfully" });
+    }
     } else {
       res.render("signup.ejs", { Msg: "All fields are required" });
     }

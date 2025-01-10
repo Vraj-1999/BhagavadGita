@@ -153,7 +153,7 @@ body {
   margin-top: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-height: 66px;
+  max-height: 278px;
 }
 
 /* Chapter Box Styling (chapters.ejs specific) */
@@ -762,6 +762,7 @@ width: 100%;
 
   /* Chapter Box */
   .chapter-box {
+    height: 351px;
     padding: 20px;
   }
 
@@ -772,7 +773,7 @@ width: 100%;
 
   /* Chapter Summary */
   .chapter-box .chapter-summary {
-    font-size: 1em;
+    font-size: 0.8em;
   }
 
   /* Verses Container */

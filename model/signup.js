@@ -25,7 +25,7 @@ const logSchema = new mongoose.Schema({
       required: true,
       unique: true,
     },
-    profilePicture: { type: String, default: 'default.jpg' }
+    profilePicture: { type: String, required:false, default: 'default.jpg' }
     ,
     createdAt: {
       type: Date,

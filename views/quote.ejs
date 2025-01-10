@@ -41,10 +41,10 @@
     <h1>QUOTE OF THE DAY</h1>
     <p>"<%=SlokLine%>"</p>
     <form action="/<%=button%>" method="POST">
-      <button class="btnss" type="submit"><%= button %></button>
+      <button class="btnss" type="submit"><%= button %> receiving daily email</button><br>
       <%if(locals.start){%>
-      <p  style="color:red; font-size: smaller;"><%=start%></p>
-      <%}else if(locals.stop){%>
+        <p  style="color:red; font-size: smaller;"><%=start%></p>
+        <%}else if(locals.stop){%>
         <p style="color: green; font-size: smaller"><%=stop%></p>  
       <%}%>
     </form>
