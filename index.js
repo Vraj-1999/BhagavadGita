@@ -779,7 +779,7 @@ app.post("/Stop", requireAuth, currentUser, async (req, res) => {
       SlokLine: quote,
       button: "Start",
       start:
-        "Currently You are will not receiving daily Quote through Email. if you want to change that use the toggle button above .",
+        "Now you will not recieve daily quote through Email. To continue receiving daily quote emails click the toggle button above.",
     });
   } else {
     res.render("quote.ejs", { SlokLine: quote });
@@ -799,7 +799,7 @@ app.post("/Start", requireAuth, currentUser, async (req, res) => {
     res.render("quote.ejs", {
       SlokLine: quote,
       button: "Stop",
-      stop: "Currently You are receiving daily Quote through Email. if you want to change that use the toggle button above .",
+      stop: "Now you will recieve daily quote through Email. To stop receiving daily quote emails click the toggle button above.",
     });
   } else {
     res.render("quote.ejs", { SlokLine: quote });
