@@ -5,7 +5,6 @@
   box-sizing: border-box;
 }
 
-/* Body styling with spiritual colors */
 body {
   height: 100vh;
   font-family: Arial, sans-serif;
@@ -19,7 +18,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Stylish Navbar */
 .topnav {
   width: 100%;
   height: 70px;
@@ -35,7 +33,6 @@ body {
   padding: 0 20px;
 }
 
-/* Logo section */
 .topnav .logo {
   font-size: 24px;
   font-weight: bold;
@@ -43,7 +40,6 @@ body {
   text-decoration: none;
 }
 
-/* Nav links styling */
 .topnav .nav-links {
   display: flex;
   gap: 20px;
@@ -65,7 +61,6 @@ body {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Animated underline */
 .topnav .nav-links a:after {
   content: "";
   display: block;
@@ -97,7 +92,6 @@ body {
   border: 2px solid #ff8c00;
 }
 
-/* Main content styling (AllChap) */
 .AllChap {
   width: 90%;
   max-width: 925px;
@@ -116,7 +110,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* Chapter links */
 .chapter-link {
   display: block;
   text-align: left;
@@ -156,7 +149,6 @@ body {
   max-height: 278px;
 }
 
-/* Chapter Box Styling (chapters.ejs specific) */
 .chapter-box {
   max-width: 90%;
   margin: 30px auto;
@@ -167,7 +159,6 @@ body {
   text-align: center;
 }
 
-/* Chapter Title */
 .chapter-box .chapter-title {
   font-size: 2.2em;
   font-weight: bold;
@@ -176,7 +167,6 @@ body {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Chapter Summary */
 .chapter-box .chapter-summary {
   font-size: 1.2em;
   line-height: 1.8;
@@ -184,7 +174,6 @@ body {
   text-align: justify;
 }
 
-/* Verses Container (chapters.ejs specific) */
 .verses-container {
   display: flex;
   flex-wrap: wrap;
@@ -194,7 +183,6 @@ body {
   padding: 20px;
 }
 
-/* Verse Card (chapters.ejs specific) */
 .verse-card {
   background: #ffffff;
   border-radius: 8px;
@@ -213,7 +201,6 @@ body {
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Verse Number */
 .verse-card .verse-number a {
   font-size: 1.2em;
   font-weight: bold;
@@ -228,7 +215,6 @@ body {
   color: #ff8c00;
 }
 
-/* Verse Text */
 .verse-card .verse-text {
   font-size: 1em;
   color: #555;
@@ -245,7 +231,6 @@ body {
   color: #ff8c00;
 }
 
-/* Read More Button */
 .verse-card .read-more {
   margin-top: 15px;
   align-self: flex-start;
@@ -263,7 +248,6 @@ body {
   background-color: #e67e00;
 }
 
-/* Footer Styles */
 .footer {
   padding-bottom: 60px;
   height: 62px;
@@ -308,7 +292,7 @@ body {
 }
 
 .icon-link:hover {
-  color: #007bff; /* Change to your preferred hover color */
+  color: #007bff;
 }
 
 .footer-bottom {
@@ -317,7 +301,6 @@ body {
   color: #777;
 }
 
-/* Loader styles */
 .loader {
   position: fixed;
   top: 0;
@@ -329,13 +312,12 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  display: none; /* Hidden by default */
+  display: none;
 }
 
-/* Spinner style */
 .spinner {
-  border: 5px solid #f3f3f3; /* Light gray */
-  border-top: 5px solid #3498db; /* Blue */
+  border: 5px solid #f3f3f3; 
+  border-top: 5px solid #3498db; 
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -394,7 +376,6 @@ body {
     align-items: center;
   }
 
-/* Spinner animation */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -472,7 +453,6 @@ body {
   line-height: 1.5;
 }
 
-/* Commentary Section */
 .commentaries {
   width: 84%;
   margin: 30px auto;
@@ -502,7 +482,6 @@ body {
   line-height: 1.5;
 }
 
-/* Comment Section */
 .comment {
   width: 70%;
   margin: 30px auto;
@@ -541,7 +520,6 @@ body {
   transform: scale(1.05);
 }
 
-/* User Comments Section */
 .userComments {
   width: 30%;
   margin: 30px auto;
@@ -637,16 +615,12 @@ width: 100%;
   background-color: #ddd;
 }
 
-/* General Styles for Larger Screens (PC) */
 
-/* Add your current styles here. No changes needed for desktop styles */
 
-/* Responsive Styles for Smaller Screens (Mobile) */
 @media screen and (max-width: 768px) {
-  /* Body */
   body {
     padding-top: 50px;
-    height: auto;  /* Allow height to adjust based on content */
+    height: auto;  
   }
   .topnav .nav-links a:hover {
     background-color: #f7d59c;
@@ -680,7 +654,6 @@ width: 100%;
 .user{
   display: none;
 }
-  /* Show nav links when navbar has the active class */
   .topnav.active .nav-links {
     display: flex;
     flex-direction: row;
@@ -692,7 +665,6 @@ width: 100%;
     color: #ff8c00;
     text-decoration: none;
   }
-  /* Mobile menu toggle */
   .topnav .menu-toggle {
     display: block;
     font-size: 30px;
@@ -700,7 +672,6 @@ width: 100%;
     cursor: pointer;
   }
 
-  /* Adjust profile section for mobile */
   .topnav .profile {
     display: flex;
     flex-direction: row;
@@ -713,7 +684,6 @@ width: 100%;
     top: 15px;
   }
 
-  /* Ensure quote and chapters sections are visible */
   .topnav .chapters,
   .topnav .quote {
     display: block;
@@ -724,7 +694,6 @@ width: 100%;
     width: 100%;
   }
 
-  /* Adjust the width and layout of chapters and quote to fit on mobile */
   .topnav .chapters a,
   .topnav .quote a {
     display: inline-block;
@@ -733,7 +702,6 @@ width: 100%;
     margin: 5px 0;
   }
 
-  /* Optionally, you can hide profile details on mobile or make it smaller */
   .topnav .profile img.icon {
     width: 30px;
     height: 30px;
@@ -742,7 +710,6 @@ width: 100%;
   width: 70%;
   margin: auto;
 }
-  /* Main content */
   .AllChap {
     width: 95%;
     max-width: 100%;
@@ -766,22 +733,18 @@ width: 100%;
     padding: 20px;
   }
 
-  /* Chapter Title */
   .chapter-box .chapter-title {
     font-size: 1.8em;
   }
 
-  /* Chapter Summary */
   .chapter-box .chapter-summary {
     font-size: 0.8em;
   }
 
-  /* Verses Container */
   .verses-container {
     gap: 10px;
   }
 
-  /* Verse Card */
   .verse-card {
     width: 100%;
     padding: 15px;
@@ -792,7 +755,6 @@ width: 100%;
     font-size: 1.1em;
   }
 
-  /* Footer */
   .footer {
     height: 110px;
     padding-top: 7px;
@@ -820,7 +782,6 @@ width: 100%;
     font-size: 20px;
   }
 
-  /* Content */
   .content {
     width: 90%;
     padding: 20px;
@@ -839,7 +800,6 @@ width: 100%;
     margin-top: 10px;
   }
 
-  /* Main Section */
   .main {
     width: 100%;
   }
@@ -854,7 +814,6 @@ width: 100%;
     font-size: 24px;
   }
 
-  /* Verse */
   .verse {
     font-size: 28px;
   }
@@ -869,7 +828,6 @@ width: 100%;
     font-size: 16px;
   }
 
-  /* Comment Section */
   .comment {
     width: 90%;
   }
@@ -907,7 +865,6 @@ width: 100%;
     font-size: 18px;
   }
 
-  /* Edit Form */
   .edit-form {
     width: 100%;
   }
