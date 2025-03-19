@@ -611,8 +611,8 @@ app.get("/quote", async (req, res) => {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "bhagwatgeeta337@gmail.com",
-    pass: "ihyf tkya nkyh mbzy",
+    user: process.env.userName,
+    pass: process.env.password,
   },
 });
 
@@ -620,7 +620,7 @@ const sendEmail = (email) => {
   console.log("Attempting to send email to:", email);
 
   const mailOptions = {
-    from: "bhagwatgeeta337@gmail.com",
+    from: process.env.userName,
     to: email,
     subject: "Good Morning! Have a Great Day!!",
     text: bhagavadGitaQuotes[
