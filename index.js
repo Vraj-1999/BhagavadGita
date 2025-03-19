@@ -30,7 +30,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 mongoose
-  .connect(process.env.MONGO_DB_Account)
+  .connect("mongodb+srv://vrajpatel479:PatelVraj2710@cluster0.28xnr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0L")
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
