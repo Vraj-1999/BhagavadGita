@@ -30,16 +30,16 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 mongoose
-  .connect("//mongodb.account//")
+  .connect(process.env.MONGO_DB_Account)
   .then(() => console.log("Db COnnected"))
   .catch((err) => console.log(err));
 
 
 
   cloudinary.config({
-    cloud_name: "vrajpatel1999",
-    api_key: "436343379635838",
-    api_secret: "1ficVzwvJ5SVdsDFBSR2BC7I1Rk",
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY ,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
     secure: true
   });
   
