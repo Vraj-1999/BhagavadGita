@@ -37,9 +37,9 @@ mongoose
 
 
   cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key:process.env.CLOUDINARY_API_KEY ,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: "vrajpatel1999",
+    api_key: "436343379635838",
+    api_secret: "1ficVzwvJ5SVdsDFBSR2BC7I1Rk",
     secure: true
   });
   
@@ -294,14 +294,16 @@ app.post(
   requireAuth,
   currentUser,
   async (req, res) => {
-    const { comEdit, commentId } = req.body; 
+    const { comEdit, commentId } = req.body; // Get the edited comment text and the comment ID
     const chapNum = req.params.chapterNum;
     const verid = req.params.verseNum;
 
     try {
       if (comEdit && commentId) {
+        // Update the comment with the provided ID
         await comment.findByIdAndUpdate(commentId, { text_area: comEdit });
 
+        // Fetch the updated verse and comments
         const verse = await axios.get(
           URLChapters + chapNum + "/verses/" + verid + "/",
           config
@@ -309,8 +311,10 @@ app.post(
         const finalVerse = verse.data;
         const Comments = await comment.find();
 
+        // Render the updated verse with comments
         res.render("verse.ejs", { verse: finalVerse, COM: Comments });
       } else {
+        // If no comment was provided or ID missing, render the verse without updating
         const verse = await axios.get(
           URLChapters + chapNum + "/verses/" + verid + "/",
           config
@@ -356,6 +360,50 @@ const createToken = (id) => {
   });
 };
 
+// app.post("/signup", upload.single("profilePicture"), async (req, res) => {
+ 
+//   try {
+//     const body = req.body;
+//     const username = req.body.user_name;
+//     const user = await signs.findOne({ username });
+
+//     if (username != user) {
+//       if (
+//         body.first_name ||
+//         body.last_name ||
+//         body.user_name ||
+//         body.password
+//       ) {
+//         const NewUser = await signs.create({
+//           first_name: body.first_name,
+//           last_name: body.last_name,
+//           gender: body.gender,
+//           user_name: body.user_name,
+//           password: body.password,
+//           profilePicture: imageUrl,
+//           emailEnabled: true,
+//         });
+
+//         console.log("all Users", NewUser);
+//         console.log(NewUser.password);
+        
+//         const token = createToken(NewUser._id);
+//         res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+
+//         const AllUsers = await signs.find();
+//         console.log("all Users", AllUsers);
+
+//         res.render("signup.ejs", { msg: "Account Created Succesfully" });
+//       } else {
+//         res.render("signup.ejs", { Msg: "All Field Required" });
+//       }
+//     } else {
+//       res.render("signup.ejs", { Msg: "Username allready used" });
+//     }
+//   } catch (error) {
+//     res.render("signup.ejs", { msg: "error" });
+//   }
+// });
 
 app.post("/signup", upload.single("profilePicture"), async (req, res) => {
   try {
@@ -384,30 +432,33 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
             return res.status(500).send("Error uploading image to Cloudinary");
           }
 
-          const imageUrl = result.secure_url; 
+          const imageUrl = result.secure_url; // Get the image URL after upload
           console.log(imageUrl);
 
+          // Create the new user after the image is uploaded
           const NewUser = await signs.create({
             first_name: body.first_name,
             last_name: body.last_name,
             gender: body.gender,
             user_name: body.user_name,
             password: body.password,
-            profilePicture: imageUrl,
+            profilePicture: imageUrl, // Store the Cloudinary URL
             emailEnabled: true,
           });
 
           console.log("All Users", NewUser);
 
+          // Create token and set cookie
           const token = createToken(NewUser._id);
           res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
+          // Fetch all users and render success message
           const AllUsers = await signs.find();
           console.log("All Users", AllUsers);
 
           res.render("signup.ejs", { msg: "Account Created Successfully" });
         }
-      ).end(req.file.buffer); 
+      ).end(req.file.buffer); // This starts the upload and sends the file buffer
     }else{
       const NewUser = await signs.create({
         first_name: body.first_name,
@@ -420,9 +471,11 @@ app.post("/signup", upload.single("profilePicture"), async (req, res) => {
 
       console.log("All Users", NewUser);
 
+      // Create token and set cookie
       const token = createToken(NewUser._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
+      // Fetch all users and render success message
       const AllUsers = await signs.find();
       console.log("All Users", AllUsers);
 
@@ -462,6 +515,67 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// app.post(
+//   "/update-profile",
+//   requireAuth,
+//   currentUser,
+//   upload.single("profilePicture"),
+//   async (req, res) => {
+//     try {
+//       const { body, file, user } = req;
+
+//       if (!user) return res.status(401).send("Unauthorized");
+      
+//       if (body.first_name) {
+//         await signs.findByIdAndUpdate(user._id, {
+//           first_name: body.first_name,
+//         });
+//         await comment.findOneAndUpdate(
+//           { secret_id: user._id }, // Query to find the document by secret_id
+//           { $set: { first_name: body.first_name } } // Update operation
+//         );
+//       }
+//       if (body.last_name) {
+//         await signs.findByIdAndUpdate(user._id, { last_name: body.last_name });
+//         await comment.findOneAndUpdate(
+//           { secret_id: user._id },
+//           { $set: { last_name: body.last_name } }
+//         );
+//       }
+//       if (body.gender) {
+//         await signs.findByIdAndUpdate(user._id, { gender: body.gender });
+//       }
+//       if (body.user_name) {
+//         await signs.findByIdAndUpdate(user._id, { user_name: body.user_name });
+//       }
+
+//       if (body.password) {
+//         const salt = await bcrypt.genSalt(); // Adjust salt rounds if needed
+//         const hashedPassword = await bcrypt.hash(body.password, salt);
+//         await signs.findByIdAndUpdate(user._id, { password: hashedPassword });
+//       }
+//       if (file?.filename) {
+//         await signs.findByIdAndUpdate(user._id, {
+//           profilePicture: file.filename,
+//         });
+
+//         await comment.findOneAndUpdate(
+//           { secret_id: user._id }, // Query to find the document by secret_id
+//           { $set: { profilePicture: file.filename } } // Update operation
+//         );
+//       }
+
+//       const token = createToken(user._id);
+//       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+
+//       console.log("Profile updated successfully");
+//       res.redirect("/users");
+//     } catch (error) {
+//       console.error("Error updating profile:", error);
+//       res.status(500).send("An error occurred");
+//     }
+//   }
+// );
 
 
 app.post(
@@ -475,12 +589,13 @@ app.post(
 
       if (!user) return res.status(401).send("Unauthorized");
 
+      // 1. Update fields like first_name, last_name, gender, etc.
       if (body.first_name) {
         await signs.findByIdAndUpdate(user._id, {
           first_name: body.first_name,
         });
         await comment.findOneAndUpdate(
-          { secret_id: user._id },
+          { secret_id: user._id }, // Query to find the document by secret_id
           { $set: { first_name: body.first_name } }
         );
       }
@@ -502,12 +617,13 @@ app.post(
       }
 
       if (body.password) {
-        const salt = await bcrypt.genSalt(); 
+        const salt = await bcrypt.genSalt(); // Adjust salt rounds if needed
         const hashedPassword = await bcrypt.hash(body.password, salt);
         await signs.findByIdAndUpdate(user._id, { password: hashedPassword });
       }
 
-      let imageUrl = user.profilePicture; 
+      // 2. Upload image to Cloudinary if a file is uploaded
+      let imageUrl = user.profilePicture; // Keep the existing image URL if no new image is uploaded
       if (file?.buffer) {
         const result = await new Promise((resolve, reject) => {
           cloudinary.uploader.upload_stream(
@@ -518,20 +634,22 @@ app.post(
               }
               resolve(result);
             }
-          ).end(file.buffer); 
+          ).end(file.buffer); // Send the image buffer to Cloudinary
         });
 
-        imageUrl = result.secure_url; 
+        imageUrl = result.secure_url; // Get the Cloudinary URL of the uploaded image
+        // Update user profile picture with the new Cloudinary URL
         await signs.findByIdAndUpdate(user._id, {
           profilePicture: imageUrl,
         });
 
         await comment.findOneAndUpdate(
-          { secret_id: user._id },
-          { $set: { profilePicture: imageUrl } }
+          { secret_id: user._id }, // Query to find the document by secret_id
+          { $set: { profilePicture: imageUrl } } // Update comment collection as well
         );
       }
 
+      // 3. Generate a new JWT token after profile update
       const token = createToken(user._id);
       res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
 
@@ -553,6 +671,7 @@ app.get(
     const commentId = req.params.commentId;
 
     try {
+      // console.log(chapterNum, verseNum, commentId);
 
       const verse = await axios.get(
         URLChapters + chapterNum + "/verses/" + verseNum + "/",
@@ -611,8 +730,8 @@ app.get("/quote", async (req, res) => {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.userName,
-    pass: process.env.password,
+    user: "bhagwatgeeta337@gmail.com",
+    pass: "ihyf tkya nkyh mbzy",
   },
 });
 
@@ -620,7 +739,7 @@ const sendEmail = (email) => {
   console.log("Attempting to send email to:", email);
 
   const mailOptions = {
-    from: process.env.userName,
+    from: "bhagwatgeeta337@gmail.com",
     to: email,
     subject: "Good Morning! Have a Great Day!!",
     text: bhagavadGitaQuotes[

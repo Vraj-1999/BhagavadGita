@@ -11,6 +11,7 @@
     <title>Bhagavad Gita Chapters</title>
   </head>
   <body>
+    <!-- Top Navigation Bar -->
     <div class="topnav">
       <a href="/home" class="logo">Bhagavad Gita
 
@@ -33,6 +34,7 @@
       </div>
     </div>
 
+    <!-- Main Content Section -->
     <div class="main-content">
       <% if (locals.chapter && locals.verses) { %>
       <div class="chapter-box">
@@ -42,6 +44,7 @@
         <p class="chapter-summary"><%= chapter.chapter_summary %></p>
       </div>
 
+      <!-- Verses Section -->
       <div class="verses-container">
         <% verses.forEach((data) => { %>
         <div class="verse-card">
@@ -53,6 +56,7 @@
               Verse <%= data.verse_number %>
             </a>
           </div>
+          <!-- Verse Text -->
           <div class="verse-text">
             <a
               href="/<%= chapter.chapter_number %>/verses/<%= data.verse_number %>"
@@ -60,6 +64,7 @@
               <%= data.translations[5].description %>
             </a>
           </div>
+          <!-- Read More Button -->
           <a
             class="read-more"
             href="/<%= chapter.chapter_number %>/verses/<%= data.verse_number %>"
